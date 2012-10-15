@@ -153,4 +153,15 @@ sub errorToString {
     }
 }
 
+sub ErrorsToString {
+    my ($self, $result_Errors) = @_;
+    ## Get Error Messages from Error Code. Error Code Mappings are in the ErrorCodeMap
+    my $lblError = "";
+    my @ErrorArray = split(/\,\s*/, $result_Errors);
+    foreach my $error (@ErrorArray) {
+        $lblError .= $error . " " . $self->errorToString($error) . "<br />";
+    }
+    return $lblError;
+}
+
 1;
