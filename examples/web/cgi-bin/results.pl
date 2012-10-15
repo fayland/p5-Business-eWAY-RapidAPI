@@ -7,6 +7,7 @@ use CGI qw(:standard);
 use CGI::Carp qw(fatalsToBrowser);
 use CGI::Session;
 use FindBin qw/$Bin/;
+use lib "$Bin/../../lib";    # for plackup
 use lib "$Bin/../../../lib"; # the path to lib/Business/Eway/RapidAPI.pm
 use Business::Eway::RapidAPI;
 
