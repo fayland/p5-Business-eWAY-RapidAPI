@@ -133,6 +133,12 @@ sub CreateAccessCode {
             }
         } else {
             if ($Request_Method ne 'RPC') {
+
+                # fixes
+                $request = $self->Obj2ARRAY($request);
+                $request->{Items} = delete $request->{Items}->{LineItem};
+                $request->{Options} = delete $request->{Options}->{Option};
+
                 $request = $self->Obj2JSON($request);
             } else {
                 $request = $self->Obj2JSONRPC("CreateAccessCode", $request);
@@ -283,7 +289,6 @@ sub PostToRapidAPI {
     }
 
     my $ua = $self->ua;
-    $ua->proxy('https', 'socks://127.0.0.1:7070');
     $ua->credentials( $self->username, $self->password );
     my $resp = $ua->post($url,
         Content => $request,
