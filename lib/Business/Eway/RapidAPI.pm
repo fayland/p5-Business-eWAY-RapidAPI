@@ -190,6 +190,86 @@ sub CreateAccessCodeREST {
     return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "s", $request);
 }
 
+sub GetAccessCodeResult {
+    my ($self, $request) = @_;
+
+    if ($self->debug) {
+        print STDERR "Request Ojbect for GetAccessCodeResult: \n";
+        print STDERR Dumper(\$request) . "\n";
+    }
+
+    my $Request_Method = $self->Request_Method;
+    my $Request_Format = $self->Request_Format;
+
+    ## Request_Method eq 'RPC' is not implemented yet
+    $Request_Method = 'REST' if $Request_Method eq 'RPC';
+
+    if ($Request_Method ne 'SOAP') {
+        if ($Request_Format eq "XML") {
+            if ($Request_Method ne 'RPC') {
+                $request = $self->Obj2XML($request, 'GetAccessCodeResult');
+            } else {
+                $request = $self->Obj2RPCXML("GetAccessCodeResult", $request);
+            }
+        } else {
+            if ($Request_Method ne 'RPC') {
+                $request = $self->Obj2JSON($request);
+            } else {
+                $request = $self->Obj2JSONRPC("GetAccessCodeResult", $request);
+            }
+        }
+    } else {
+        $request = $self->Obj2ARRAY($request);
+    }
+
+    if ($self->debug) {
+        print "Request String for GetAccessCodeResult: \n";
+        print STDERR Dumper(\$request) . "\n";
+    }
+
+    my $method = 'GetAccessCodeResult' . $Request_Method;
+    my $response = $self->$method($request);
+
+    if ($self->debug) {
+        print "Response String for GetAccessCodeResult: \n";
+        print STDERR Dumper(\$response) . "\n";
+    }
+
+    # Convert Response Back TO An Object
+    my $result;
+    if ($Request_Method ne 'SOAP') {
+        if ($Request_Format eq "XML") {
+            if ($Request_Method ne 'RPC') {
+                $result = $self->XML2Obj($response);
+            } else {
+                $result = $self->RPCXML2Obj($response);
+            }
+        } else {
+            if ($Request_Method ne 'RPC') {
+                $result = $self->JSON2Obj($response);
+            } else {
+                $result = $self->JSONRPC2Obj($response);
+            }
+        }
+    } else {
+        $result = $request;
+    }
+
+    # Is Debug Mode
+    if ($self->debug) {
+        print "Response Object for GetAccessCodeResult: \n";
+        print STDERR Dumper(\$result) . "\n";
+    }
+
+    return $result;
+}
+
+sub GetAccessCodeResultREST {
+    my ($self, $request) = @_;
+
+    return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "/" . $request->AccessCode, $request);
+}
+
 sub PostToRapidAPI {
     my ($self, $url, $request) = @_;
 
@@ -203,6 +283,7 @@ sub PostToRapidAPI {
     }
 
     my $ua = $self->ua;
+    $ua->proxy('https', 'socks://127.0.0.1:7070');
     $ua->credentials( $self->username, $self->password );
     my $resp = $ua->post($url,
         Content => $request,
