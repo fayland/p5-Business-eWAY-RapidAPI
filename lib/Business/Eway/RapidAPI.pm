@@ -281,6 +281,7 @@ sub GetAccessCodeResultREST {
 sub PostToRapidAPI {
     my ($self, $url, $request, $is_post) = @_;
 
+    $is_post = 1 unless defined $is_post;
     my $Request_Format = $self->Request_Format;
 
     my $content_type;

@@ -101,9 +101,10 @@ qq|                    Invoice Reference</label>|.
 qq|                <label id="lblInvoiceReference"> $result->{'InvoiceReference'} </label>|.
 qq|            </div>|;
 
-my $valOpt1 = (defined($result->{'Options'}{'Option'}[0]{'Value'}) ? $result->{'Options'}{'Option'}[0]{'Value'}:"");
-my $valOpt2 = (defined($result->{'Options'}{'Option'}[1]{'Value'}) ? $result->{'Options'}{'Option'}[1]{'Value'}:"");
-my $valOpt3 = (defined($result->{'Options'}{'Option'}[2]{'Value'}) ? $result->{'Options'}{'Option'}[2]{'Value'}:"");
+my $valOpt1 = (defined($result->{'Options'}[0]{'Value'}) ? $result->{'Options'}[0]{'Value'}:"");
+my $valOpt2 = (defined($result->{'Options'}[1]{'Value'}) ? $result->{'Options'}[1]{'Value'}:"");
+my $valOpt3 = (defined($result->{'Options'}[2]{'Value'}) ? $result->{'Options'}[2]{'Value'}:"");
+
 print
 qq|            <div class="fields">|.
 qq|                <label for="lblOption1">|.
