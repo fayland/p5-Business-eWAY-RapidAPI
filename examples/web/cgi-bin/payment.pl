@@ -175,7 +175,7 @@ my $selectoptions_expiry_month = "";
 my $selectoptions_CardExpiryYear = "";
     for (my $i = 12; $i <= 23; $i++) {
         $selectoptions_CardExpiryYear .= "<option value='$i'";
-        if ( $Response->{'Customer'}{'CardExpiryYear'} == $i ) {
+        if ( $Response->{'Customer'}{'CardExpiryYear'} and $Response->{'Customer'}{'CardExpiryYear'} == $i ) {
             $selectoptions_CardExpiryYear .= " selected='selected'";
         }
         $selectoptions_CardExpiryYear .= ">$i</option>\n";
@@ -189,7 +189,7 @@ my $selectoptions_CardStartMonth = "";
     for(my $i = 1; $i <= 12; $i++) {
         my $s = sprintf('%02d', $i);
         $selectoptions_CardStartMonth .= "<option value='$s'";
-	if ( $start_month == $i ) {
+	    if ( $start_month == $i ) {
             $selectoptions_CardStartMonth .= " selected='selected'";
         }
         $selectoptions_CardStartMonth .= ">$s</option>\n";
@@ -199,7 +199,7 @@ my $selectoptions_CardStartYear = "";
     for (my $i = 12; $i <= 23; $i++) {
         $selectoptions_CardStartYear .= "<option value='$i'";
 	if (defined($Response->{'Customer'}{'CardStartMonth'})) {
-	if ( $Response->{'Customer'}{'CardStartYear'} == $i ) {
+	    if ( defined $Response->{'Customer'}{'CardStartYear'} and $Response->{'Customer'}{'CardStartYear'} == $i ) {
             $selectoptions_CardStartYear .= " selected='selected'";
         } }
         $selectoptions_CardStartYear .= ">$i</option>\n";

@@ -60,24 +60,11 @@ sub _build_ua {
         password => "Abcd1234",
     );
 
-    my $request = Business::Eway::RapidAPI::CreateAccessCodeRequest->new();
-    $request->Customer->Reference('My Reference');
-
-    my $item1 = Business::Eway::RapidAPI::LineItem->new();
-    $item1->SKU("SKU1");
-    $item1->Description("Description1");
-    my $item2 = Business::Eway::RapidAPI::LineItem->new();
-    $item2->SKU("SKU2");
-    $item2->Description("Description2");
-    $request->Items->LineItem([ $item1, $item2 ]);
-
-    my $opt1 = Business::Eway::RapidAPI::Option->new(Value => 'Test1');
-    my $opt2 = Business::Eway::RapidAPI::Option->new(Value => 'Test2');
-    $request->Options->Option([$opt1, $opt2]);
-
 =head1 DESCRIPTION
 
-eWAY RapidAPI
+eWAY RapidAPI L<http://www.eway.com.au/developers/api/rapid-3-0>
+
+check L<https://github.com/fayland/p5-Business-eWAY-RapidAPI/tree/master/examples/web> for usage demo.
 
 =head2 METHODS
 
@@ -108,6 +95,101 @@ required
 default 0
 
 =back
+
+=head3 CreateAccessCode
+
+request AccessCode by submit customer/shippingaddress/payment/redirectUrl etc.
+
+    ## Create AccessCode Request Object
+    my $request = Business::Eway::RapidAPI::CreateAccessCodeRequest->new();
+
+    ## Populate values for Customer Object
+    if (defined $q->param('txtTokenCustomerID')){
+        $request->Customer->TokenCustomerID($q->param('txtTokenCustomerID'));
+    };
+    $request->Customer->Reference( $q->param('txtCustomerRef') );
+    $request->Customer->Title( $q->param('ddlTitle') );
+    # Note: FirstName is Required Field When Create/Update a TokenCustomer
+    $request->Customer->FirstName( $q->param('txtFirstName') );
+    # Note: LastName is Required Field When Create/Update a TokenCustomer
+    $request->Customer->LastName( $q->param('txtLastName') );
+    $request->Customer->CompanyName( $q->param('txtCompanyName') );
+    $request->Customer->JobDescription( $q->param('txtJobDescription') );
+    $request->Customer->Street1( $q->param('txtStreet1') );
+    $request->Customer->Street2( $q->param('txtStreet2') );
+    $request->Customer->City( $q->param('txtCity') );
+    $request->Customer->State( $q->param('txtState') );
+    $request->Customer->PostalCode( $q->param('txtPostalcode') );
+    # Note: Country is Required Field When Create/Update a TokenCustomer
+    $request->Customer->Country( $q->param('txtCountry') );
+    $request->Customer->Email( $q->param('txtEmail') );
+    $request->Customer->Phone( $q->param('txtPhone') );
+    $request->Customer->Mobile( $q->param('txtMobile') );
+    $request->Customer->Comments("Some Comments Here");
+    $request->Customer->Fax("0131 208 0321");
+    $request->Customer->Url("http://www.yoursite.com");
+
+    ## Populate values for ShippingAddress Object.
+    ## This values can be taken from a Form POST as well. Now is just some dummy data.
+    $request->ShippingAddress->FirstName("John");
+    $request->ShippingAddress->LastName("Doe");
+    $request->ShippingAddress->Street1("9/10 St Andrew");
+    $request->ShippingAddress->Street2(" Square");
+    $request->ShippingAddress->City("Edinburgh");
+    $request->ShippingAddress->State("");
+    $request->ShippingAddress->Country("gb");
+    $request->ShippingAddress->PostalCode("EH2 2AF");
+    $request->ShippingAddress->Email('sales@eway.co.uk');
+    $request->ShippingAddress->Phone("0131 208 0321");
+    # ShippingMethod, e.g. "LowCost", "International", "Military". Check the spec for available values.
+    $request->ShippingAddress->ShippingMethod("LowCost");
+
+    ## Populate values for LineItems
+    my $item1 = Business::Eway::RapidAPI::LineItem->new();
+    $item1->SKU("SKU1");
+    $item1->Description("Description1");
+    my $item2 = Business::Eway::RapidAPI::LineItem->new();
+    $item2->SKU("SKU2");
+    $item2->Description("Description2");
+    $request->Items->LineItem([ $item1, $item2 ]);
+
+    ## Populate values for Options
+    my $opt1 = Business::Eway::RapidAPI::Option->new(Value => $q->param('txtOption1'));
+    my $opt2 = Business::Eway::RapidAPI::Option->new(Value => $q->param('txtOption2'));
+    my $opt3 = Business::Eway::RapidAPI::Option->new(Value => $q->param('txtOption3'));
+    $request->Options->Option([$opt1, $opt2, $opt3]);
+
+    $request->Payment->TotalAmount($q->param('txtAmount'));
+    $request->Payment->InvoiceNumber($q->param('txtInvoiceNumber'));
+    $request->Payment->InvoiceDescription( $q->param('txtInvoiceDescription') );
+    $request->Payment->InvoiceReference( $q->param('txtInvoiceReference') );
+    $request->Payment->CurrencyCode( $q->param('txtCurrencyCode') );
+
+    ## Url to the page for getting the result with an AccessCode
+    $request->RedirectUrl($q->param('txtRedirectURL'));
+    ## Method for this request. e.g. ProcessPayment, Create TokenCustomer, Update TokenCustomer & TokenPayment
+    $request->Method($q->param('ddlMethod'));
+
+    my $result = $rapidapi->CreateAccessCode($request);
+
+    ## Save result into Session. payment.pl and results.pl will retrieve this result from Session
+    $session->param('TotalAmount', $q->param('txtAmount') );
+    $session->param('InvoiceReference', $q->param('txtInvoiceReference') );
+    $session->param('Response', $result );
+    $session->flush();
+
+    ## Check if any error returns
+    if (defined( $result->{'Errors'} )) {
+        $lblError = $rapidapi->ErrorsToString( $result->{'Errors'} );
+    } else {
+        ## All good then redirect to the payment page
+        print $session->header(-location => 'payment.pl');
+        exit();
+    }
+
+    ## $result is HASHREF contains
+    ## FormActionURL
+    ## AccessCode
 
 =cut
 
@@ -196,6 +278,32 @@ sub CreateAccessCodeREST {
 
     return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "s", $request);
 }
+
+=pod
+
+=head3 GetAccessCodeResult
+
+get payment result by previous stored AccessCode
+
+    my $request = Business::Eway::RapidAPI::GetAccessCodeResultRequest->new();
+    $request->AccessCode($q->param('AccessCode'));
+
+    ## Call RapidAPI to get the result
+    my $result = $rapidapi->GetAccessCodeResult($request);
+
+    ## Check if any error returns
+    my $lblError;
+    if (defined($result->{'Errors'})) {
+        $lblError = $rapidapi->ErrorsToString($result->{'Errors'});
+    }
+
+    ## $result is HASHREF contains:
+    ## ResponseCode
+    ## Options
+    ## TransactionID
+    ## ... etc.
+
+=cut
 
 sub GetAccessCodeResult {
     my ($self, $request) = @_;
