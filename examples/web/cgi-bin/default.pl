@@ -15,8 +15,6 @@ $| = 1;
 
 my $q = new CGI();
 my $session = new CGI::Session();
-print $session->header();
-$session->flush();
 
 my $self_url = $q->url(-absolute);
 $self_url =~ s/default\.pl/results\.pl/;
@@ -25,7 +23,6 @@ my $redirect_url = $self_url;
 my $lblError;
 
 if ( defined( $q->param('btnSubmit')) ) {
-
     my $rapidapi = Business::Eway::RapidAPI->new(
         mode => 'test',
         username => "44DD7C70Jre1dVgIsULcEyi+A+/cX9V5SAHkIiyVdWrHRG2tZm0rdintfZz85Pa/kGwq/1",
@@ -102,7 +99,16 @@ if ( defined( $q->param('btnSubmit')) ) {
     ## Method for this request. e.g. ProcessPayment, Create TokenCustomer, Update TokenCustomer & TokenPayment
     $request->Method($q->param('ddlMethod'));
 
-    my $result = $rapidapi->CreateAccessCode($request);
+    my $result;
+    eval {
+        $result = $rapidapi->CreateAccessCode($request);
+    };
+
+    if ($@) {
+        print $session->header();
+        print $@;
+        exit;
+    }
 
     ## Save result into Session. payment.pl and results.pl will retrieve this result from Session
     $session->param('TotalAmount', $q->param('txtAmount') );
@@ -111,15 +117,17 @@ if ( defined( $q->param('btnSubmit')) ) {
     $session->flush();
 
     ## Check if any error returns
-    if(defined( $result->{'Errors'} )) {
+    if (defined( $result->{'Errors'} )) {
         $lblError = $rapidapi->ErrorsToString( $result->{'Errors'} );
     } else {
         ## All good then redirect to the payment page
-        $q->header(-location => 'payment.pl');
+        print $session->header(-location => 'payment.pl');
         exit();
     }
 }
 
+print $session->header();
+$session->flush();
 ## Content
 print
 qq|<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">|.
@@ -208,7 +216,7 @@ qq|                Customer Details|.
 qq|            </div>|.
 qq|            <div class="fields">|.
 qq|                <label for="txtTokenCustomerID">Token Customer ID &nbsp;<img src="../Images/question.gif" alt="Find out more" id="tokenCustomerTipOpener" border="0" /></label>|.
-qq|                <input id="txtTokenCustomerID" name="txtTokenCustomerID" type="text" value="9876543211000" />|.
+qq|                <input id="txtTokenCustomerID" name="txtTokenCustomerID" type="text" value="" />|.
 qq|            </div>|.
 qq||.
 qq|            <div class="fields">|.

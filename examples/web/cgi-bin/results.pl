@@ -15,14 +15,15 @@ $| = 1;
 
 my $q = new CGI();
 my $session = new CGI::Session();
-print $session->header();
-$session->flush();
 
 my $Response = $session->param('Response');
 if (!defined($Response) ) {
-    header("Location: default.pl");
+    print $q->header("Location: default.pl");
     exit();
 }
+
+print $session->header();
+$session->flush();
 
 ## Build request for getting the result with the access code.
 my $request = Business::Eway::RapidAPI::GetAccessCodeResultRequest->new();

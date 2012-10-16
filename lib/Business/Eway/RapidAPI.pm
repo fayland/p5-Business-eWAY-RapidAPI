@@ -4,6 +4,7 @@ package Business::Eway::RapidAPI;
 
 use Moo;
 use Business::Eway::RapidAPI::CreateAccessCodeRequest;
+use Business::Eway::RapidAPI::GetAccessCodeResultRequest;
 use Data::Dumper;
 use WWW::Mechanize;
 
