@@ -275,11 +275,11 @@ sub GetAccessCodeResult {
 sub GetAccessCodeResultREST {
     my ($self, $request, $AccessCode) = @_;
 
-    return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "/" . $AccessCode, $request);
+    return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "/" . $AccessCode, $request, 0);
 }
 
 sub PostToRapidAPI {
-    my ($self, $url, $request) = @_;
+    my ($self, $url, $request, $is_post) = @_;
 
     my $Request_Format = $self->Request_Format;
 
@@ -292,10 +292,18 @@ sub PostToRapidAPI {
 
     my $ua = $self->ua;
     $ua->credentials( $self->username, $self->password );
-    my $resp = $ua->post($url,
-        Content => $request,
-        'Content-Type' => $content_type
-    );
+    my $resp;
+    if ($is_post) {
+        $resp = $ua->post($url,
+            Content => $request,
+            'Content-Type' => $content_type
+        );
+    } else {
+        $resp = $ua->get($url,
+            Content => $request,
+            'Content-Type' => $content_type
+        );
+    }
 
     unless ($resp->is_success) {
         print '<h2>POST Error: ' . $resp->status_line . ' URL: ' . $url. ' </h2> <pre>';
