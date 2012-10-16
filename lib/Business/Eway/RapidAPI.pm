@@ -274,7 +274,7 @@ sub GetAccessCodeResult {
 sub GetAccessCodeResultREST {
     my ($self, $request) = @_;
 
-    return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "/" . $request->AccessCode, $request);
+    return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "/" . $request->{AccessCode}, $request);
 }
 
 sub PostToRapidAPI {
