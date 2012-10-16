@@ -1,4 +1,4 @@
-package Business::Eway::RapidAPI::Role::ErrorCodeMap;
+package Business::eWAY::RapidAPI::Role::ErrorCodeMap;
 
 use Moo::Role;
 

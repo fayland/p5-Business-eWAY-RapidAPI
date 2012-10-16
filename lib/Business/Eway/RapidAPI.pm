@@ -1,15 +1,15 @@
-package Business::Eway::RapidAPI;
+package Business::eWAY::RapidAPI;
 
 # ABSTRACT: PunchTab REST API
 
 use Moo;
-use Business::Eway::RapidAPI::CreateAccessCodeRequest;
-use Business::Eway::RapidAPI::GetAccessCodeResultRequest;
+use Business::eWAY::RapidAPI::CreateAccessCodeRequest;
+use Business::eWAY::RapidAPI::GetAccessCodeResultRequest;
 use Data::Dumper;
 use WWW::Mechanize;
 
-with 'Business::Eway::RapidAPI::Role::Parser';
-with 'Business::Eway::RapidAPI::Role::ErrorCodeMap';
+with 'Business::eWAY::RapidAPI::Role::Parser';
+with 'Business::eWAY::RapidAPI::Role::ErrorCodeMap';
 
 has 'mode' => (is => 'rw', default => sub {'live'});
 has 'urls' => (is => 'lazy');
@@ -53,9 +53,9 @@ sub _build_ua {
 
 =head1 SYNOPSIS
 
-    use Business::Eway::RapidAPI;
+    use Business::eWAY::RapidAPI;
 
-    my $rapidapi = Business::Eway::RapidAPI->new(
+    my $rapidapi = Business::eWAY::RapidAPI->new(
         username => "44DD7C70Jre1dVgIsULcEyi+A+/cX9V5SAHkIiyVdWrHRG2tZm0rdintfZz85Pa/kGwq/1",
         password => "Abcd1234",
     );
@@ -70,7 +70,7 @@ check L<https://github.com/fayland/p5-Business-eWAY-RapidAPI/tree/master/example
 
 =head3 CONSTRUCTION
 
-    my $rapidapi = Business::Eway::RapidAPI->new(
+    my $rapidapi = Business::eWAY::RapidAPI->new(
         mode => 'test',
         username => "44DD7C70Jre1dVgIsULcEyi+A+/cX9V5SAHkIiyVdWrHRG2tZm0rdintfZz85Pa/kGwq/1",
         password => "Abcd1234",
@@ -101,7 +101,7 @@ default 0
 request AccessCode by submit customer/shippingaddress/payment/redirectUrl etc.
 
     ## Create AccessCode Request Object
-    my $request = Business::Eway::RapidAPI::CreateAccessCodeRequest->new();
+    my $request = Business::eWAY::RapidAPI::CreateAccessCodeRequest->new();
 
     ## Populate values for Customer Object
     if (defined $q->param('txtTokenCustomerID')){
@@ -145,18 +145,18 @@ request AccessCode by submit customer/shippingaddress/payment/redirectUrl etc.
     $request->ShippingAddress->ShippingMethod("LowCost");
 
     ## Populate values for LineItems
-    my $item1 = Business::Eway::RapidAPI::LineItem->new();
+    my $item1 = Business::eWAY::RapidAPI::LineItem->new();
     $item1->SKU("SKU1");
     $item1->Description("Description1");
-    my $item2 = Business::Eway::RapidAPI::LineItem->new();
+    my $item2 = Business::eWAY::RapidAPI::LineItem->new();
     $item2->SKU("SKU2");
     $item2->Description("Description2");
     $request->Items->LineItem([ $item1, $item2 ]);
 
     ## Populate values for Options
-    my $opt1 = Business::Eway::RapidAPI::Option->new(Value => $q->param('txtOption1'));
-    my $opt2 = Business::Eway::RapidAPI::Option->new(Value => $q->param('txtOption2'));
-    my $opt3 = Business::Eway::RapidAPI::Option->new(Value => $q->param('txtOption3'));
+    my $opt1 = Business::eWAY::RapidAPI::Option->new(Value => $q->param('txtOption1'));
+    my $opt2 = Business::eWAY::RapidAPI::Option->new(Value => $q->param('txtOption2'));
+    my $opt3 = Business::eWAY::RapidAPI::Option->new(Value => $q->param('txtOption3'));
     $request->Options->Option([$opt1, $opt2, $opt3]);
 
     $request->Payment->TotalAmount($q->param('txtAmount'));
@@ -285,7 +285,7 @@ sub CreateAccessCodeREST {
 
 get payment result by previous stored AccessCode
 
-    my $request = Business::Eway::RapidAPI::GetAccessCodeResultRequest->new();
+    my $request = Business::eWAY::RapidAPI::GetAccessCodeResultRequest->new();
     $request->AccessCode($q->param('AccessCode'));
 
     ## Call RapidAPI to get the result

@@ -1,4 +1,4 @@
-package Business::Eway::RapidAPI::Customer;
+package Business::eWAY::RapidAPI::Customer;
 
 use Moo;
 use MooX::Types::MooseLike::Base qw(:all);

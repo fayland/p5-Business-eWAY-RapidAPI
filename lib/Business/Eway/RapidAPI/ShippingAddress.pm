@@ -1,4 +1,4 @@
-package Business::Eway::RapidAPI::ShippingAddress;
+package Business::eWAY::RapidAPI::ShippingAddress;
 
 use Moo;
 use MooX::Types::MooseLike::Base qw(:all);

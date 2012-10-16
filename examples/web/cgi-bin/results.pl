@@ -8,8 +8,8 @@ use CGI::Carp qw(fatalsToBrowser);
 use CGI::Session;
 use FindBin qw/$Bin/;
 use lib "$Bin/../../lib";    # for plackup
-use lib "$Bin/../../../lib"; # the path to lib/Business/Eway/RapidAPI.pm
-use Business::Eway::RapidAPI;
+use lib "$Bin/../../../lib"; # the path to lib/Business/eWAY/RapidAPI.pm
+use Business::eWAY::RapidAPI;
 
 $| = 1;
 
@@ -26,10 +26,10 @@ print $session->header();
 $session->flush();
 
 ## Build request for getting the result with the access code.
-my $request = Business::Eway::RapidAPI::GetAccessCodeResultRequest->new();
+my $request = Business::eWAY::RapidAPI::GetAccessCodeResultRequest->new();
 $request->AccessCode($q->param('AccessCode'));
 
-my $rapidapi = Business::Eway::RapidAPI->new(
+my $rapidapi = Business::eWAY::RapidAPI->new(
     mode => 'test',
     username => "44DD7C70Jre1dVgIsULcEyi+A+/cX9V5SAHkIiyVdWrHRG2tZm0rdintfZz85Pa/kGwq/1",
     password => "Abcd1234",

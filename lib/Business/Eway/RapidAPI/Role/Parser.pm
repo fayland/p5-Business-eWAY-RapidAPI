@@ -1,4 +1,4 @@
-package Business::Eway::RapidAPI::Role::Parser;
+package Business::eWAY::RapidAPI::Role::Parser;
 
 use Moo::Role;
 

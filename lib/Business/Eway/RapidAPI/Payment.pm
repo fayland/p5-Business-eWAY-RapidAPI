@@ -1,4 +1,4 @@
-package Business::Eway::RapidAPI::Payment;
+package Business::eWAY::RapidAPI::Payment;
 
 use Moo;
 use MooX::Types::MooseLike::Base qw(:all);

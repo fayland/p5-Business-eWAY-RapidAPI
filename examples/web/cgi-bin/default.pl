@@ -8,8 +8,8 @@ use CGI::Carp qw(fatalsToBrowser);
 use CGI::Session;
 use FindBin qw/$Bin/;
 use lib "$Bin/../../lib";    # for plackup
-use lib "$Bin/../../../lib"; # the path to lib/Business/Eway/RapidAPI.pm
-use Business::Eway::RapidAPI;
+use lib "$Bin/../../../lib"; # the path to lib/Business/eWAY/RapidAPI.pm
+use Business::eWAY::RapidAPI;
 
 $| = 1;
 
@@ -23,14 +23,14 @@ my $redirect_url = $self_url;
 my $lblError;
 
 if ( defined( $q->param('btnSubmit')) ) {
-    my $rapidapi = Business::Eway::RapidAPI->new(
+    my $rapidapi = Business::eWAY::RapidAPI->new(
         mode => 'test',
         username => "44DD7C70Jre1dVgIsULcEyi+A+/cX9V5SAHkIiyVdWrHRG2tZm0rdintfZz85Pa/kGwq/1",
         password => "Abcd1234",
     );
 
     ## Create AccessCode Request Object
-    my $request = Business::Eway::RapidAPI::CreateAccessCodeRequest->new();
+    my $request = Business::eWAY::RapidAPI::CreateAccessCodeRequest->new();
 
     ## Populate values for Customer Object
     if (defined $q->param('txtTokenCustomerID')){
@@ -74,18 +74,18 @@ if ( defined( $q->param('btnSubmit')) ) {
     $request->ShippingAddress->ShippingMethod("LowCost");
 
     ## Populate values for LineItems
-    my $item1 = Business::Eway::RapidAPI::LineItem->new();
+    my $item1 = Business::eWAY::RapidAPI::LineItem->new();
     $item1->SKU("SKU1");
     $item1->Description("Description1");
-    my $item2 = Business::Eway::RapidAPI::LineItem->new();
+    my $item2 = Business::eWAY::RapidAPI::LineItem->new();
     $item2->SKU("SKU2");
     $item2->Description("Description2");
     $request->Items->LineItem([ $item1, $item2 ]);
 
     ## Populate values for Options
-    my $opt1 = Business::Eway::RapidAPI::Option->new(Value => $q->param('txtOption1'));
-    my $opt2 = Business::Eway::RapidAPI::Option->new(Value => $q->param('txtOption2'));
-    my $opt3 = Business::Eway::RapidAPI::Option->new(Value => $q->param('txtOption3'));
+    my $opt1 = Business::eWAY::RapidAPI::Option->new(Value => $q->param('txtOption1'));
+    my $opt2 = Business::eWAY::RapidAPI::Option->new(Value => $q->param('txtOption2'));
+    my $opt3 = Business::eWAY::RapidAPI::Option->new(Value => $q->param('txtOption3'));
     $request->Options->Option([$opt1, $opt2, $opt3]);
 
     $request->Payment->TotalAmount($q->param('txtAmount'));

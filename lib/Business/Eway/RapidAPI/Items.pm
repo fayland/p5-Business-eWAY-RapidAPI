@@ -1,12 +1,12 @@
-package Business::Eway::RapidAPI::Items;
+package Business::eWAY::RapidAPI::Items;
 
 use Moo;
 use MooX::Types::MooseLike::Base qw(:all);
 
-has 'LineItem' => (is => 'rw', isa => ArrayRef[InstanceOf['Business::Eway::RapidAPI::LineItem']], default => sub { [] });
+has 'LineItem' => (is => 'rw', isa => ArrayRef[InstanceOf['Business::eWAY::RapidAPI::LineItem']], default => sub { [] });
 
 package # hidden from PAUSE
-    Business::Eway::RapidAPI::LineItem;
+    Business::eWAY::RapidAPI::LineItem;
 
 use Moo;
 use MooX::Types::MooseLike::Base qw(:all);

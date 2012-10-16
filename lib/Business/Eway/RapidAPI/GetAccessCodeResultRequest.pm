@@ -1,4 +1,4 @@
-package Business::Eway::RapidAPI::GetAccessCodeResultRequest;
+package Business::eWAY::RapidAPI::GetAccessCodeResultRequest;
 
 use Moo;
 use MooX::Types::MooseLike::Base qw(:all);
