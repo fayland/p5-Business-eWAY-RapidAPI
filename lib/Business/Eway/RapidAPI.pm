@@ -205,6 +205,7 @@ sub GetAccessCodeResult {
         print STDERR Dumper(\$request) . "\n";
     }
 
+    my $AccessCode = $request->AccessCode;
     my $Request_Method = $self->Request_Method;
     my $Request_Format = $self->Request_Format;
 
@@ -235,7 +236,7 @@ sub GetAccessCodeResult {
     }
 
     my $method = 'GetAccessCodeResult' . $Request_Method;
-    my $response = $self->$method($request);
+    my $response = $self->$method($request, $AccessCode);
 
     if ($self->debug) {
         print "Response String for GetAccessCodeResult: \n";
@@ -272,9 +273,9 @@ sub GetAccessCodeResult {
 }
 
 sub GetAccessCodeResultREST {
-    my ($self, $request) = @_;
+    my ($self, $request, $AccessCode) = @_;
 
-    return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "/" . $request->{AccessCode}, $request);
+    return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "/" . $AccessCode, $request);
 }
 
 sub PostToRapidAPI {
