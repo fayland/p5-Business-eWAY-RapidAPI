@@ -1,6 +1,6 @@
 package Business::eWAY::RapidAPI;
 
-# ABSTRACT: PunchTab REST API
+# ABSTRACT: eWAY RapidAPI V3
 
 use Moo;
 use Business::eWAY::RapidAPI::CreateAccessCodeRequest;

@@ -1,5 +1,8 @@
 Revision history for Perl extension Business-eWAY-RapidAPI
 
+0.03    2013.01.30
+        fix NAME from ABSTRACT
+
 0.02    2012.10.16
         Eway -> eWAY
 
