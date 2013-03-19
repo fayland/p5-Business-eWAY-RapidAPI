@@ -9,7 +9,7 @@ package # hidden from PAUSE
     Business::eWAY::RapidAPI::Option;
 
 use Moo;
-use MooX::Types::MooseLike::Base qw(:all);
+use MooX::Types::MooseLike::Base 'Str';
 
 has 'Value' => (is => 'rw', isa => Str);
 
