@@ -7,6 +7,7 @@ use Business::eWAY::RapidAPI::CreateAccessCodeRequest;
 use Business::eWAY::RapidAPI::GetAccessCodeResultRequest;
 use Data::Dumper;
 use WWW::Mechanize;
+use IO::Socket::SSL qw( SSL_VERIFY_NONE );
 
 with 'Business::eWAY::RapidAPI::Role::Parser';
 with 'Business::eWAY::RapidAPI::Role::ErrorCodeMap';
@@ -48,7 +49,10 @@ has 'Request_Format' => (is => 'rw', required => 1, default => sub {'JSON'});
 has 'ua' => (is => 'lazy');
 sub _build_ua {
     my $self = shift;
-    return WWW::Mechanize->new(timeout => 60, autocheck => 0, stack_depth => 1, ssl_opts => { verify_hostname => 0 });
+    return WWW::Mechanize->new(timeout => 60, autocheck => 0, stack_depth => 1, ssl_opts => {
+        verify_hostname => 0,
+        SSL_verify_mode => SSL_VERIFY_NONE, # BAD
+    });
 }
 
 =head1 SYNOPSIS

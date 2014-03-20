@@ -1,5 +1,8 @@
 Revision history for Perl extension Business-eWAY-RapidAPI
 
+0.05    2014-03-21
+        remove warnings with SSL_verify_mode => SSL_VERIFY_NONE (BAD)
+
 0.04    2013.03.19
         fix 'You cannot overwrite a locally defined method (Value) with an accessor' (RT 84034)
 
