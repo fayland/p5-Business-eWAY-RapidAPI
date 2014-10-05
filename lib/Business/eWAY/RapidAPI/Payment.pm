@@ -5,4 +5,6 @@ use MooX::Types::MooseLike::Base qw(:all);
 
 has $_ => (is => 'rw', isa => Str) foreach ('TotalAmount', 'InvoiceNumber', 'InvoiceDescription', 'InvoiceReference', 'CurrencyCode');
 
+no Moo;
+
 1;

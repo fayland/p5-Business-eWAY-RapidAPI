@@ -5,4 +5,6 @@ use MooX::Types::MooseLike::Base qw(:all);
 
 has 'AccessCode' => (is => 'rw', isa => Str);
 
+no Moo;
+
 1;

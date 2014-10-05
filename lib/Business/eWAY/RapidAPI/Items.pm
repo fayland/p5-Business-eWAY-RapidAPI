@@ -5,6 +5,8 @@ use MooX::Types::MooseLike::Base qw(:all);
 
 has 'LineItem' => (is => 'rw', isa => ArrayRef[InstanceOf['Business::eWAY::RapidAPI::LineItem']], default => sub { [] });
 
+no Moo;
+
 package # hidden from PAUSE
     Business::eWAY::RapidAPI::LineItem;
 
@@ -13,6 +15,6 @@ use MooX::Types::MooseLike::Base qw(:all);
 
 has $_ => (is => 'rw', isa => Str) foreach ('SKU', 'Description', 'Quantity', 'UnitCost', 'Tax', 'Total');
 
-1;
+no Moo;
 
 1;

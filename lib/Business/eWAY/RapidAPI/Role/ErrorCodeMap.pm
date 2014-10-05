@@ -164,4 +164,6 @@ sub ErrorsToString {
     return $lblError;
 }
 
+no Moo::Role;
+
 1;

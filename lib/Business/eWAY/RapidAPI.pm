@@ -21,7 +21,7 @@ sub _build_urls {
             'PaymentService.Soap' => 'https://api.ewaypayments.com/soap.asmx?WSDL',
             'PaymentService.POST.CreateAccessCode' => 'https://api.ewaypayments.com/CreateAccessCode.xml',
             'PaymentService.POST.GetAccessCodeResult' => 'https://api.ewaypayments.com/GetAccessCodeResult.xml',
-            'PaymentService.REST' => 'https://api.ewaypayments.com/AccessCode',
+            'PaymentService.REST' => 'https://api.ewaypayments.com/',
             'PaymentService.RPC' => 'https://api.ewaypayments.com/json-rpc',
             'PaymentService.JSONPScript' => 'https://api.ewaypayments.com/JSONP/v1/js',
         }
@@ -30,7 +30,7 @@ sub _build_urls {
             'PaymentService.Soap' => 'https://api.sandbox.ewaypayments.com/Soap.asmx?WSDL',
             'PaymentService.POST.CreateAccessCode' => 'https://api.sandbox.ewaypayments.com/CreateAccessCode.xml',
             'PaymentService.POST.GetAccessCodeResult' => 'https://api.sandbox.ewaypayments.com/GetAccessCodeResult.xml',
-            'PaymentService.REST' => 'https://api.sandbox.ewaypayments.com/AccessCode',
+            'PaymentService.REST' => 'https://api.sandbox.ewaypayments.com/',
             'PaymentService.RPC' => 'https://api.sandbox.ewaypayments.com/json-rpc',
             'PaymentService.JSONPScript' => 'https://api.sandbox.ewaypayments.com/JSONP/v1/js',
         }
@@ -280,7 +280,7 @@ sub CreateAccessCode {
 sub CreateAccessCodeREST {
     my ($self, $request) = @_;
 
-    return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "s", $request);
+    return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "AccessCodes", $request);
 }
 
 =pod
@@ -387,7 +387,186 @@ sub GetAccessCodeResult {
 sub GetAccessCodeResultREST {
     my ($self, $request, $AccessCode) = @_;
 
-    return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "/" . $AccessCode, $request, 0);
+    return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "AccessCode/" . $AccessCode, $request, 0);
+}
+
+=head3 Transaction
+
+Direct Payment L<http://api-portal.anypoint.mulesoft.com/eway/api/eway-rapid-31-api/docs/reference/direct-connection>
+
+    ## Create AccessCode Request Object
+    my $request = Business::eWAY::RapidAPI::TransactionRequest->new();
+
+    ## Populate values for Customer Object
+    if (defined $q->param('txtTokenCustomerID')){
+        $request->Customer->TokenCustomerID($q->param('txtTokenCustomerID'));
+    };
+    $request->Customer->Reference( $q->param('txtCustomerRef') );
+    $request->Customer->Title( $q->param('ddlTitle') );
+    # Note: FirstName is Required Field When Create/Update a TokenCustomer
+    $request->Customer->FirstName( $q->param('txtFirstName') );
+    # Note: LastName is Required Field When Create/Update a TokenCustomer
+    $request->Customer->LastName( $q->param('txtLastName') );
+    $request->Customer->CompanyName( $q->param('txtCompanyName') );
+    $request->Customer->JobDescription( $q->param('txtJobDescription') );
+    $request->Customer->Street1( $q->param('txtStreet1') );
+    $request->Customer->Street2( $q->param('txtStreet2') );
+    $request->Customer->City( $q->param('txtCity') );
+    $request->Customer->State( $q->param('txtState') );
+    $request->Customer->PostalCode( $q->param('txtPostalcode') );
+    # Note: Country is Required Field When Create/Update a TokenCustomer
+    $request->Customer->Country( $q->param('txtCountry') );
+    $request->Customer->Email( $q->param('txtEmail') );
+    $request->Customer->Phone( $q->param('txtPhone') );
+    $request->Customer->Mobile( $q->param('txtMobile') );
+    $request->Customer->Comments("Some Comments Here");
+    $request->Customer->Fax("0131 208 0321");
+    $request->Customer->Url("http://www.yoursite.com");
+
+    $request->Customer->CardDetails->Number = '4444333322221111';
+    $request->Customer->CardDetails->Name   = 'Card Holder Name';
+    $request->Customer->CardDetails->ExpiryMonth = '12';
+    $request->Customer->CardDetails->ExpiryYear = '16';
+    # $request->Customer->CardDetails->StartMonth = '11';
+    # and others like StartYear, IssueNumber, CVN
+
+    ## Populate values for ShippingAddress Object.
+    ## This values can be taken from a Form POST as well. Now is just some dummy data.
+    $request->ShippingAddress->FirstName("John");
+    $request->ShippingAddress->LastName("Doe");
+    $request->ShippingAddress->Street1("9/10 St Andrew");
+    $request->ShippingAddress->Street2(" Square");
+    $request->ShippingAddress->City("Edinburgh");
+    $request->ShippingAddress->State("");
+    $request->ShippingAddress->Country("gb");
+    $request->ShippingAddress->PostalCode("EH2 2AF");
+    $request->ShippingAddress->Email('sales@eway.co.uk');
+    $request->ShippingAddress->Phone("0131 208 0321");
+    # ShippingMethod, e.g. "LowCost", "International", "Military". Check the spec for available values.
+    $request->ShippingAddress->ShippingMethod("LowCost");
+
+    ## Populate values for LineItems
+    my $item1 = Business::eWAY::RapidAPI::LineItem->new();
+    $item1->SKU("SKU1");
+    $item1->Description("Description1");
+    my $item2 = Business::eWAY::RapidAPI::LineItem->new();
+    $item2->SKU("SKU2");
+    $item2->Description("Description2");
+    $request->Items->LineItem([ $item1, $item2 ]);
+
+    $request->Payment->TotalAmount($q->param('txtAmount'));
+    $request->Payment->InvoiceNumber($q->param('txtInvoiceNumber'));
+    $request->Payment->InvoiceDescription( $q->param('txtInvoiceDescription') );
+    $request->Payment->InvoiceReference( $q->param('txtInvoiceReference') );
+    $request->Payment->CurrencyCode( $q->param('txtCurrencyCode') );
+
+    ## Method for this request. eg. ProcessPayment, CreateTokenCustomer, UpdateTokenCustomer, TokenPayment
+    $request->method('ProcessPayment');
+
+    ## Method for this request. e.g. Purchase, MOTO, Recurring
+    $request->TransactionType('Purchase');
+
+    my $result = $rapidapi->Transaction($request);
+
+    ## Check if any error returns
+    if (defined( $result->{'Errors'} )) {
+        $lblError = $rapidapi->ErrorsToString( $result->{'Errors'} );
+    } else {
+        ## All good. go ahead
+        print "Transaction done.\n";
+        exit();
+    }
+
+    ## $result is HASHREF contains
+    ## TransactionID
+    ## TransactionStatus etc.
+
+=cut
+
+sub Transaction {
+    my ($self, $request) = @_;
+
+    if ($self->debug) {
+        print STDERR "Request Ojbect for Transaction: \n";
+        print STDERR Dumper(\$request) . "\n";
+    }
+
+    my $Request_Method = $self->Request_Method;
+    my $Request_Format = $self->Request_Format;
+
+    ## Request_Method eq 'RPC' is not implemented yet
+    $Request_Method = 'REST' if $Request_Method eq 'RPC';
+
+    if ($Request_Method ne 'SOAP') {
+        if ($Request_Format eq "XML") {
+            if ($Request_Method ne 'RPC') {
+                $request = $self->Obj2XML($request, 'Transaction');
+            } else {
+                $request = $self->Obj2RPCXML("Transaction", $request);
+            }
+        } else {
+            if ($Request_Method ne 'RPC') {
+
+                # fixes
+                $request = $self->Obj2ARRAY($request);
+                $request->{Items} = delete $request->{Items}->{LineItem};
+                $request->{Options} = delete $request->{Options}->{Option};
+
+                $request = $self->Obj2JSON($request);
+            } else {
+                $request = $self->Obj2JSONRPC("Transaction", $request);
+            }
+        }
+    } else {
+        $request = $self->Obj2ARRAY($request);
+    }
+
+    if ($self->debug) {
+        print "Request String for Transaction: \n";
+        print STDERR Dumper(\$request) . "\n";
+    }
+
+    my $method = 'Transaction' . $Request_Method;
+    my $response = $self->$method($request);
+
+    if ($self->debug) {
+        print "Response String for Transaction: \n";
+        print STDERR Dumper(\$response) . "\n";
+    }
+
+    # Convert Response Back TO An Object
+    my $result;
+    if ($Request_Method ne 'SOAP') {
+        if ($Request_Format eq "XML") {
+            if ($Request_Method ne 'RPC') {
+                $result = $self->XML2Obj($response);
+            } else {
+                $result = $self->RPCXML2Obj($response);
+            }
+        } else {
+            if ($Request_Method ne 'RPC') {
+                $result = $self->JSON2Obj($response);
+            } else {
+                $result = $self->JSONRPC2Obj($response);
+            }
+        }
+    } else {
+        $result = $request;
+    }
+
+    # Is Debug Mode
+    if ($self->debug) {
+        print "Response Object for Transaction: \n";
+        print STDERR Dumper(\$result) . "\n";
+    }
+
+    return $result;
+}
+
+sub TransactionREST {
+    my ($self, $request) = @_;
+
+    return $self->PostToRapidAPI($self->urls->{'PaymentService.REST'} . "Transaction", $request);
 }
 
 sub PostToRapidAPI {
@@ -425,5 +604,7 @@ sub PostToRapidAPI {
 
     return $resp->decoded_content;
 }
+
+no Moo;
 
 1;

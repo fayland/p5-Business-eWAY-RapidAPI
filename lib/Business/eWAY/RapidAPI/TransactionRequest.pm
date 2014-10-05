@@ -1,18 +1,18 @@
-package Business::eWAY::RapidAPI::CreateAccessCodeRequest;
+package Business::eWAY::RapidAPI::TransactionRequest;
 
 use Moo;
 use MooX::Types::MooseLike::Base qw(:all);
 
-use Business::eWAY::RapidAPI::Customer;
+use Business::eWAY::RapidAPI::CardCustomer;
 use Business::eWAY::RapidAPI::Items;
 use Business::eWAY::RapidAPI::Options;
 use Business::eWAY::RapidAPI::Payment;
 use Business::eWAY::RapidAPI::ShippingAddress;
 
-has $_ => (is => 'rw', isa => Str) foreach ('RedirectUrl', 'IPAddress', 'DeviceID', 'Method');
+has $_ => (is => 'rw', isa => Str) foreach ('Method', 'CustomerIP', 'DeviceID', 'TransactionType', 'PartnerID');
 
-has 'Customer' => (is => 'lazy', isa => InstanceOf['Business::eWAY::RapidAPI::Customer']);
-sub _build_Customer { Business::eWAY::RapidAPI::Customer->new }
+has 'Customer' => (is => 'lazy', isa => InstanceOf['Business::eWAY::RapidAPI::CardCustomer']);
+sub _build_Customer { Business::eWAY::RapidAPI::CardCustomer->new }
 has 'Items' => (is => 'lazy', isa => InstanceOf['Business::eWAY::RapidAPI::Items']);
 sub _build_Items { Business::eWAY::RapidAPI::Items->new }
 has 'Options' => (is => 'lazy', isa => InstanceOf['Business::eWAY::RapidAPI::Options']);

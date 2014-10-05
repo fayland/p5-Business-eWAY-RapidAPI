@@ -46,4 +46,6 @@ sub XML2Obj {
     return $xs->XMLin($obj, ForceArray => ['Items','Options'], KeepRoot => 0, ForceContent => 0);
 }
 
+no Moo::Role;
+
 1;
