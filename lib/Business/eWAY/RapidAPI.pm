@@ -5,6 +5,7 @@ package Business::eWAY::RapidAPI;
 use Moo;
 use Business::eWAY::RapidAPI::CreateAccessCodeRequest;
 use Business::eWAY::RapidAPI::GetAccessCodeResultRequest;
+use Business::eWAY::RapidAPI::TransactionRequest;
 use Data::Dumper;
 use WWW::Mechanize;
 use IO::Socket::SSL qw( SSL_VERIFY_NONE );
@@ -423,12 +424,13 @@ Direct Payment L<http://api-portal.anypoint.mulesoft.com/eway/api/eway-rapid-31-
     $request->Customer->Fax("0131 208 0321");
     $request->Customer->Url("http://www.yoursite.com");
 
-    $request->Customer->CardDetails->Number = '4444333322221111';
-    $request->Customer->CardDetails->Name   = 'Card Holder Name';
-    $request->Customer->CardDetails->ExpiryMonth = '12';
-    $request->Customer->CardDetails->ExpiryYear = '16';
-    # $request->Customer->CardDetails->StartMonth = '11';
-    # and others like StartYear, IssueNumber, CVN
+    $request->Customer->CardDetails->Number('4444333322221111');
+    $request->Customer->CardDetails->Name('Card Holder Name');
+    $request->Customer->CardDetails->ExpiryMonth('12');
+    $request->Customer->CardDetails->ExpiryYear('16');
+    $request->Customer->CardDetails->CVN('123');
+    # $request->Customer->CardDetails->StartMonth('11');
+    # and others like StartYear, IssueNumber
 
     ## Populate values for ShippingAddress Object.
     ## This values can be taken from a Form POST as well. Now is just some dummy data.
