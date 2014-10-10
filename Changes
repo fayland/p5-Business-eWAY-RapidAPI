@@ -1,5 +1,8 @@
 Revision history for Perl extension Business-eWAY-RapidAPI
 
+0.09    2014-10-10
+        handle response error like 401 Unauthorized
+
 0.08    2014-10-05
         error code updates
 
