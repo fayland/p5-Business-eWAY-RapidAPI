@@ -5,6 +5,7 @@ use warnings;
 use FindBin qw/$Bin/;
 use lib "$Bin/../lib";
 use Business::eWAY::RapidAPI;
+use Data::Dumper;
 
 my $rapidapi = Business::eWAY::RapidAPI->new(
     mode => 'test',
@@ -38,7 +39,7 @@ $request->Customer->Url("http://www.yoursite.com");
 $request->Customer->CardDetails->Number('4444333322221111');
 $request->Customer->CardDetails->Name('Card Holder Name');
 $request->Customer->CardDetails->ExpiryMonth('12');
-$request->Customer->CardDetails->ExpiryYear('16');
+$request->Customer->CardDetails->ExpiryYear('11');
 $request->Customer->CardDetails->CVN('123');
 # $request->Customer->CardDetails->StartMonth('11');
 # and others like StartYear, IssueNumber
@@ -68,18 +69,27 @@ my $opt1 = Business::eWAY::RapidAPI::Option->new(Value => 'Test1');
 my $opt2 = Business::eWAY::RapidAPI::Option->new(Value => 'Test2');
 $request->Options->Option([$opt1, $opt2]);
 
-$request->Payment->TotalAmount(100);
+$request->Payment->TotalAmount(0);
 $request->Payment->InvoiceNumber('Inv 21540');
 $request->Payment->InvoiceDescription('Individual Invoice Description');
 $request->Payment->InvoiceReference('513456');
 $request->Payment->CurrencyCode('AUD');
 
-$request->Method('ProcessPayment');
+$request->Method('CreateTokenCustomer');
 $request->TransactionType('Purchase');
 
 my $result = $rapidapi->Transaction($request);
 
-use Data::Dumper;
-print Dumper(\$rapidapi, \$request, \$result);
+if ($result->{Customer}->{TokenCustomerID}) {
+    $request->Customer->TokenCustomerID($result->{Customer}->{TokenCustomerID});
+    $request->Payment->TotalAmount(100);
+    $request->Method('TokenPayment');
+    my $result = $rapidapi->Transaction($request);
+    print Dumper(\$result);
+} else {
+    die Dumper(\$result);
+}
+
+# print Dumper(\$rapidapi, \$request, \$result);
 
 1;
