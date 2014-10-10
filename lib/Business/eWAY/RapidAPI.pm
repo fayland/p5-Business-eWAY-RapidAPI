@@ -600,7 +600,12 @@ sub PostToRapidAPI {
     }
 
     unless ($resp->is_success) {
-        return { TransactionStatus => 0, ResponseMessage => $resp->status_line };
+        my $r = { TransactionStatus => 0, ResponseMessage => $resp->status_line };
+        if ($Request_Format eq 'XML') {
+            return $self->Obj2XML($r, 'Error');
+        } else {
+            return $self->Obj2JSON($r);
+        }
         # print '<h2>POST Error: ' . $resp->status_line . ' URL: ' . $url. ' </h2> <pre>';
         # die Dumper(\$resp);
     }
