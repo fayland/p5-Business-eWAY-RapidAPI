@@ -9,6 +9,8 @@ extends 'Business::eWAY::RapidAPI::Customer';
 has 'CardDetails' => (is => 'lazy', isa => InstanceOf['Business::eWAY::RapidAPI::CardDetails']);
 sub _build_CardDetails { Business::eWAY::RapidAPI::CardDetails->new }
 
+sub TO_JSON { return { %{ $_[0] } }; }
+
 no Moo;
 
 1;

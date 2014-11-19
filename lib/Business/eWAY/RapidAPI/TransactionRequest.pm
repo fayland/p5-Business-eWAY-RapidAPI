@@ -22,6 +22,8 @@ sub _build_Payment { Business::eWAY::RapidAPI::Payment->new }
 has 'ShippingAddress' => (is => 'lazy', isa => InstanceOf['Business::eWAY::RapidAPI::ShippingAddress']);
 sub _build_ShippingAddress { Business::eWAY::RapidAPI::ShippingAddress->new }
 
+sub TO_JSON { return { %{ $_[0] } }; }
+
 no Moo;
 
 1;

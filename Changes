@@ -1,5 +1,8 @@
 Revision history for Perl extension Business-eWAY-RapidAPI
 
+0.11    2014-11-18
+        use JSON::MaybeXS and add TO_JSON for all Moo obejcts (RT #100439)
+
 0.10    2014-10-10
         fix fix fix
 
